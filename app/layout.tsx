@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import "./globals.css";
 import { Sidebar } from "@/components/Sidebar";
+import { ToastProvider } from "@/components/ToastProvider";
 
 export const metadata: Metadata = {
   title: "LexPlain AI — Legal Q&A and Document Summaries",
@@ -19,7 +20,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <a href="#main-content" className="skip-link">
           Skip to main content
         </a>
-        <Sidebar>{children}</Sidebar>
+        <ToastProvider>
+          <Sidebar>{children}</Sidebar>
+        </ToastProvider>
       </body>
     </html>
   );

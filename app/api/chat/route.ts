@@ -14,6 +14,7 @@ const requestSchema = z.object({
   locale: z.enum(["en", "es", "fr", "ar", "pt"]).default("en"),
 });
 
+/** Swallows persistence errors so a flaky store never breaks the actual chat reply — history is a nice-to-have, not a hard dependency. */
 async function safeAppendMessage(
   sid: string,
   message: Parameters<typeof appendMessage>[1],
@@ -25,6 +26,7 @@ async function safeAppendMessage(
   }
 }
 
+/** Bakes the locale + retrieved CONTEXT + disclaimer into one system prompt so every code path (AI success, fallback, error) can render the same text for the "View AI prompt" debug field. */
 function systemPromptFor(locale: string, context: string): string {
   return [
     "You are LexPlain AI, a public legal-information assistant. You are NOT a lawyer and must never give personalized legal advice.",
@@ -38,6 +40,7 @@ function systemPromptFor(locale: string, context: string): string {
   ].join("\n");
 }
 
+/** Restores prior turns on page load/reload so the chat log survives a refresh without needing client-side storage. */
 export async function GET(req: NextRequest) {
   const sid = req.headers.get("x-session-id");
   if (!sid) return NextResponse.json({ error: "No session." }, { status: 400 });
@@ -51,6 +54,7 @@ export async function GET(req: NextRequest) {
   }
 }
 
+/** Separated from POST() so the outer try/catch below is the only place that has to think about an unhandled-exception safety net. */
 async function handlePost(req: NextRequest): Promise<NextResponse> {
   const sid = req.headers.get("x-session-id");
   if (!sid) return NextResponse.json({ error: "No session." }, { status: 400 });
@@ -114,6 +118,7 @@ async function handlePost(req: NextRequest): Promise<NextResponse> {
   }
 }
 
+/** Outer safety net: guarantees a JSON error response instead of a raw framework 500 if handlePost throws something unexpected. */
 export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
     return await handlePost(req);

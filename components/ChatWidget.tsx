@@ -71,11 +71,14 @@ export function ChatWidget() {
     };
   }, []);
 
+  // Keeps the newest message in view as the log grows, without needing a
+  // dedicated "scroll to bottom" button.
   useEffect(() => {
     const el = logRef.current;
     if (el) el.scrollTop = el.scrollHeight;
   }, [messages, isLoading]);
 
+  /** Updates the UI immediately and persists in the background — a failed PATCH shouldn't block the user from continuing in their chosen language. */
   async function handleLocaleChange(next: SupportedLocale) {
     setLocale(next);
     try {
@@ -89,6 +92,7 @@ export function ChatWidget() {
     }
   }
 
+  /** Appends the user's message optimistically before the network call resolves, so the UI feels immediate rather than waiting on the round trip. */
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     const trimmed = input.trim();

@@ -1,13 +1,16 @@
 export interface AppUser {
+  /** Always lowercased — email addresses are treated case-insensitively (matches how the app/api/auth/login zod schema also lowercases the submitted value). */
   username: string;
   password: string;
 }
 
 /**
- * Parses APP_USERS from env: "user1:pass1,user2:pass2" — colon-separated
- * username:password pairs, comma-separated. No database — credentials live
- * in .env only. Pure string parsing, so this module is safe to import from
- * both the edge middleware (proxy.ts) and Node API routes.
+ * Parses APP_USERS from env: "user1@example.com:pass1,user2@example.com:pass2"
+ * — colon-separated username:password pairs, comma-separated. Username is
+ * meant to be an email address (validated at the API layer with zod's
+ * `.email()`, not here) — this module only does structural parsing so it
+ * stays a single source of truth for both the edge middleware (proxy.ts) and
+ * Node API routes. No database — credentials live in .env only.
  */
 export function parseAppUsers(): AppUser[] {
   const raw = process.env.APP_USERS ?? "";
@@ -18,7 +21,7 @@ export function parseAppUsers(): AppUser[] {
     .flatMap((entry) => {
       const idx = entry.indexOf(":");
       if (idx === -1) return [];
-      const username = entry.slice(0, idx).trim();
+      const username = entry.slice(0, idx).trim().toLowerCase();
       const password = entry.slice(idx + 1).trim();
       return username && password ? [{ username, password }] : [];
     });
@@ -75,10 +78,14 @@ function constantTimeEqual(a: string, b: string): boolean {
  * Returns the matched user on success, or null. Always runs a comparison
  * (against an empty string when the username isn't found) so an unknown
  * username and a wrong password take about the same amount of time.
+ * `username` is compared case-insensitively (lowercased), matching how
+ * `parseAppUsers` stores it and how email addresses are conventionally
+ * treated — the caller (app/api/auth/login/route.ts) is expected to have
+ * already validated it's a well-formed email via zod before calling this.
  */
 export function verifyCredentials(username: string, password: string): AppUser | null {
   const users = parseAppUsers();
-  const match = users.find((u) => u.username === username);
+  const match = users.find((u) => u.username === username.trim().toLowerCase());
   const ok = constantTimeEqual(password, match?.password ?? "");
   return ok && match ? match : null;
 }

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ActSearch } from "@/components/ActSearch";
 import { LegalDisclaimerBanner } from "@/components/LegalDisclaimerBanner";
 
 const PILLARS = [
@@ -104,6 +105,8 @@ export default function HomePage() {
           ))}
         </ul>
       </section>
+
+      <ActSearch />
     </div>
   );
 }

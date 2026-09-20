@@ -16,6 +16,7 @@ export function DocumentUpload() {
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<DocumentAnalysisResult | null>(null);
 
+  /** Validates type/size client-side before the file ever leaves the browser — mirrors the server's own check so the error shows instantly, with no network round trip. */
   function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
     const selected = e.target.files?.[0] ?? null;
     setError(null);
@@ -42,6 +43,7 @@ export function DocumentUpload() {
     setFile(selected);
   }
 
+  /** Sends a file as multipart form data or pasted text as JSON — the API route branches on Content-Type to accept either input method through one endpoint. */
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     if (isLoading) return;

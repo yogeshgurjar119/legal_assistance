@@ -79,5 +79,10 @@ describe("auth", () => {
       delete process.env.APP_USERS;
       expect(verifyCredentials("admin", "secret123")).toBeNull();
     });
+
+    it("matches the username case-insensitively (usernames are meant to be emails)", () => {
+      expect(verifyCredentials("ADMIN", "secret123")).toEqual({ username: "admin", password: "secret123" });
+      expect(verifyCredentials("  Admin  ", "secret123")).toEqual({ username: "admin", password: "secret123" });
+    });
   });
 });

@@ -6,6 +6,7 @@ const MAX_HISTORY = 50;
 
 const inMemoryHistory = getGlobalMap<string, PersistedChatMessage[]>("chat_history");
 
+/** Dual-mode read (Turso row set vs. in-memory array) so callers never need to know which store is active. */
 export async function listMessages(sid: string): Promise<PersistedChatMessage[]> {
   const client = getTursoClient();
 
@@ -27,6 +28,7 @@ export async function listMessages(sid: string): Promise<PersistedChatMessage[]>
   }));
 }
 
+/** Stamps createdAt server-side (never trusts a client-supplied timestamp) before writing to whichever store is active. */
 export async function appendMessage(
   sid: string,
   message: Omit<PersistedChatMessage, "createdAt">,

@@ -44,6 +44,7 @@ export async function getOrCreateSessionRecord(sid: string): Promise<SessionReco
   return confirmedRow ? { locale: confirmedRow.locale as SupportedLocale } : { ...DEFAULT_RECORD };
 }
 
+/** Ensures the row exists first (via getOrCreateSessionRecord) so the UPDATE below can never silently affect zero rows for a brand-new sid. */
 export async function setSessionLocale(sid: string, locale: SupportedLocale): Promise<void> {
   const client = getTursoClient();
 

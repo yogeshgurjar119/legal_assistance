@@ -23,6 +23,7 @@ export function retrieveSnippets(query: string, limit = 3): LegalSnippet[] {
   return legalSnippets.slice(0, limit);
 }
 
+/** Formats snippets as a CONTEXT block for the chat system prompt, falling back to English when a snippet lacks the requested locale. */
 export function buildContextBlock(snippets: LegalSnippet[], locale: SupportedLocale): string {
   return snippets
     .map((snippet) => `- [${snippet.category}] ${snippet.answer[locale] ?? snippet.answer.en}`)

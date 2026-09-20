@@ -10,6 +10,7 @@ const patchSchema = z.object({
   locale: z.enum(["en", "es", "fr", "ar", "pt"]),
 });
 
+/** Exposes auth state read from proxy.ts's request headers here, alongside locale, so client components (Sidebar, ChatWidget) only need one fetch. */
 export async function GET(req: NextRequest) {
   const sid = req.headers.get("x-session-id");
   if (!sid) return NextResponse.json({ error: "No session." }, { status: 400 });
@@ -28,6 +29,7 @@ export async function GET(req: NextRequest) {
   }
 }
 
+/** Lets the language dropdown persist a locale choice server-side so it survives a reload without relying on client storage. */
 export async function PATCH(req: NextRequest) {
   const sid = req.headers.get("x-session-id");
   if (!sid) return NextResponse.json({ error: "No session." }, { status: 400 });

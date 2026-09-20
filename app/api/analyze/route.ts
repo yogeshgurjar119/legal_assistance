@@ -21,6 +21,7 @@ const pasteSchema = z.object({
   text: z.string().trim().min(1),
 });
 
+/** Kept separate from lib/ai-gateway.ts's chat prompt since document analysis needs different instructions (summarize + flag clauses, not answer a question). */
 function systemPrompt(): string {
   return [
     "You are LexPlain AI, a public legal-document explainer. You are NOT a lawyer and must never give personalized legal advice.",
@@ -30,6 +31,7 @@ function systemPrompt(): string {
   ].join(" ");
 }
 
+/** Swallows persistence errors — analysis history is a nice-to-have, not something that should block returning the actual result to the user. */
 async function safeAppendAnalysis(
   sid: string,
   analysis: { sourceName: string; summary: string; clauses: FlaggedClause[]; mode: AnalysisMode },
@@ -41,6 +43,7 @@ async function safeAppendAnalysis(
   }
 }
 
+/** Translates the parser's typed errors into stable `code` values the client (DocumentUpload.tsx) matches on to show a specific message, instead of one generic failure. */
 function mapParseErrorToResponse(err: unknown): NextResponse | null {
   if (err instanceof UnsupportedFileError) {
     return NextResponse.json(
@@ -69,6 +72,7 @@ function mapParseErrorToResponse(err: unknown): NextResponse | null {
   return null;
 }
 
+/** Handles both a file upload (multipart) and pasted text (JSON) through one endpoint, since the client offers both as equivalent input methods. */
 async function handlePost(req: NextRequest): Promise<NextResponse> {
   const sid = req.headers.get("x-session-id");
   if (!sid) return NextResponse.json({ error: "No session." }, { status: 400 });
@@ -145,6 +149,7 @@ async function handlePost(req: NextRequest): Promise<NextResponse> {
   }
 }
 
+/** Outer safety net: guarantees a JSON error response instead of a raw framework 500 if handlePost throws something unexpected. */
 export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
     return await handlePost(req);
@@ -154,6 +159,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   }
 }
 
+/** Lets the UI show a "recent analyses" list if that's ever wired up — currently unused by the client but kept symmetric with the chat history GET. */
 export async function GET(req: NextRequest) {
   const sid = req.headers.get("x-session-id");
   if (!sid) return NextResponse.json({ error: "No session." }, { status: 400 });

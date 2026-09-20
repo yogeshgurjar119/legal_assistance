@@ -23,6 +23,7 @@ export function getTursoClient(): Client | null {
   return cachedClient;
 }
 
+/** Lets callers branch to their in-memory fallback without needing to know getTursoClient()'s null-caching details. */
 export function isTursoConfigured(): boolean {
   return getTursoClient() !== null;
 }

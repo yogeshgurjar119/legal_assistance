@@ -7,11 +7,17 @@ import { signSessionToken } from "@/lib/session-crypto";
 
 export const runtime = "nodejs";
 
+// Username must be a well-formed email address — this is a UI/demo choice
+// (not a real account system), but validating it as an email gives a clean,
+// concrete "valid vs invalid input" pair to demonstrate: a malformed address
+// like "not-an-email" fails validation here (400) before ever touching
+// verifyCredentials, distinctly from a well-formed-but-wrong email (401).
 const loginSchema = z.object({
-  username: z.string().trim().min(1).max(100),
+  username: z.string().trim().toLowerCase().email({ message: "Enter a valid email address." }).max(100),
   password: z.string().min(1).max(200),
 });
 
+/** Separated from POST() so the outer try/catch is the only place worrying about an unhandled-exception safety net. */
 async function handlePost(req: NextRequest): Promise<NextResponse> {
   if (!isAuthConfigured()) {
     return NextResponse.json({ error: "Login is not configured on this server." }, { status: 503 });
@@ -26,7 +32,8 @@ async function handlePost(req: NextRequest): Promise<NextResponse> {
   const body = await req.json().catch(() => null);
   const parsed = loginSchema.safeParse(body);
   if (!parsed.success) {
-    return NextResponse.json({ error: "Invalid request." }, { status: 400 });
+    const message = parsed.error.issues[0]?.message ?? "Invalid request.";
+    return NextResponse.json({ error: message }, { status: 400 });
   }
 
   const user = verifyCredentials(parsed.data.username, parsed.data.password);
@@ -54,6 +61,7 @@ async function handlePost(req: NextRequest): Promise<NextResponse> {
   return res;
 }
 
+/** Outer safety net: guarantees a JSON error response instead of a raw framework 500 if handlePost throws something unexpected. */
 export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
     return await handlePost(req);

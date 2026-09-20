@@ -85,3 +85,25 @@ export interface PersistedAnalysis {
   mode: AnalysisMode;
   createdAt: string;
 }
+
+/**
+ * A curated, static reference entry for a well-known Indian statute section
+ * (see seed/act-sections.ts). Deliberately NOT a live/external data source —
+ * India has no genuinely free, sustainable case-law/statute API (confirmed
+ * by research), and a small always-correct static index is more honest and
+ * more useful than an unreliable "live" integration. Many sections were
+ * renumbered when the IPC/CrPC were replaced by the BNS/BNSS on 2024-07-01 —
+ * `newAct`/`newSection` are null when no renumbering applies (or isn't yet
+ * confirmed against an official source).
+ */
+export interface ActSection {
+  id: string;
+  oldAct: "IPC" | "CrPC";
+  oldSection: string;
+  newAct: "BNS" | "BNSS" | null;
+  newSection: string | null;
+  title: string;
+  keywords: string[];
+  summary: string;
+  sourceUrl: string;
+}

@@ -22,7 +22,7 @@ contract or lease (or just paste a clause) and get a plain-language summary alon
 flagged clauses worth extra attention — auto-renewal terms, sole-discretion
 termination, indemnification, mandatory arbitration, liquidated damages, and broad
 liability waivers. No database-backed accounts, no roles — an optional env-based
-login gate (`APP_USERS`) can require a username/password before anything is
+login gate (`APP_USERS`) can require an email/password before anything is
 reachable, but the app runs fully open by default (zero-config).
 
 ### How it covers the problem statement
@@ -32,6 +32,7 @@ reachable, but the app runs fully open by default (zero-config).
 | Understand legal information | Multilingual Q&A grounded in a seeded legal-info corpus     | [`/chat`](app/chat/page.tsx), [`components/ChatWidget.tsx`](components/ChatWidget.tsx), [`app/api/chat/route.ts`](app/api/chat/route.ts)                 |
 | Navigate legal documents     | Upload/paste a document → plain-language summary           | [`/analyze`](app/analyze/page.tsx), [`components/DocumentUpload.tsx`](components/DocumentUpload.tsx), [`lib/document-parser.ts`](lib/document-parser.ts) |
 | Compare / flag risk          | Deterministic clause risk-flagging (works with zero AI key) | [`seed/legal-corpus.ts`](seed/legal-corpus.ts) `RISK_CLAUSE_PATTERNS`, [`components/DocumentSummary.tsx`](components/DocumentSummary.tsx)               |
+| Navigate statutes            | Search well-known IPC/CrPC sections by number or keyword, with the renumbered BNS/BNSS equivalent | [`components/ActSearch.tsx`](components/ActSearch.tsx), [`lib/act-search.ts`](lib/act-search.ts), [`seed/act-sections.ts`](seed/act-sections.ts) |
 | Multilingual assistance      | English, Spanish, French, Arabic, Portuguese                | [`components/ChatWidget.tsx`](components/ChatWidget.tsx)                                                                                                   |
 | Accessibility of legal info  | Open by default (no login required to try it); an optional env-based login gate for real deployments | [`app/layout.tsx`](app/layout.tsx), [`components/Sidebar.tsx`](components/Sidebar.tsx), [`app/login/page.tsx`](app/login/page.tsx) |
 
@@ -78,7 +79,7 @@ Copy `.env.example` to `.env.local` and fill in whichever of these you want:
 | `NVIDIA_API_KEY`                            | Same, using NVIDIA NIM instead — only used if`GROQ_API_KEY` isn't set                                  | Free (build.nvidia.com)                     |
 | `TURSO_DATABASE_URL` + `TURSO_AUTH_TOKEN` | Sessions, chat history, and analysis history persist in a real (SQLite/libSQL) database instead of memory | Free tier at turso.tech                     |
 | `SESSION_SECRET`                            | Sessions verify consistently across multiple serverless instances — **required** if `APP_USERS` is set | —                                          |
-| `APP_USERS`                                 | Requires login (username/password from this env var) before any page or API route is reachable — see below | —                                          |
+| `APP_USERS`                                 | Requires login (email/password pairs from this env var) before any page or API route is reachable — see below | —                                          |
 
 Nothing here needs a code change — every variable is detected at runtime and the
 relevant `lib/*` module switches behavior automatically.
@@ -113,16 +114,19 @@ That's it — no manual schema step. `lib/turso.ts` creates the `sessions`,
 
 **Login gate (optional, env-based, no database):**
 
-1. Set `APP_USERS=username:password` (or a comma-separated list of pairs, e.g.
-   `admin:demo1234,reviewer:letmein`) in `.env.local`.
+1. Set `APP_USERS=email:password` (or a comma-separated list of pairs, e.g.
+   `admin@example.com:demo1234,reviewer@example.com:letmein`) in `.env.local`. The
+   username must be a well-formed email address — validated server-side with zod,
+   matched case-insensitively — a malformed value like `not-an-email` is rejected
+   with a `400` before any credential check even runs.
 2. **Also set `SESSION_SECRET`** to any random string. This is required, not optional,
    for login specifically — see the comment above `APP_USERS` in `.env.example` for
    why (a cross-runtime signing-secret mismatch otherwise). If `APP_USERS` is set
    without `SESSION_SECRET`, the app deliberately stays open and logs a warning,
    rather than shipping a login screen that doesn't actually work.
 3. Restart the dev server. Every page and API route now redirects to `/login` (or
-   returns `401` for API calls) until a valid `username`/`password` pair from
-   `APP_USERS` is submitted there. Log out via the sidebar's **Log out** button.
+   returns `401` for API calls) until a valid email/password pair from `APP_USERS` is
+   submitted there. Log out via the sidebar's **Log out** button.
 
 </details>
 
@@ -137,6 +141,9 @@ That's it — no manual schema step. `lib/turso.ts` creates the `sessions`,
   OpenAI-compatible endpoint) as an optional free fallback, using `generateText` for
   chat and `generateObject` (schema-validated structured output) for document analysis
 - **unpdf** (Mozilla's pdfjs-dist, maintained) for pure-JS PDF text extraction (no native dependencies)
+- A small, curated static reference index (`seed/act-sections.ts`) for well-known
+  Indian statute sections — no external API (none exists that's genuinely free and
+  sustainable; see the architecture decision log for why)
 - **Turso** (libSQL/SQLite, hosted via `@libsql/client`) for persistence — optional,
   in-memory fallback otherwise
 - **Tailwind CSS v4** for styling
@@ -189,19 +196,24 @@ that verifies this.
 ### Repository layout
 
 ```
-proxy.ts                              — issues the signed session-id cookie on every request
+proxy.ts                              — issues the signed session cookie + auth gate on every request
 app/
   page.tsx, chat/page.tsx,
-  analyze/page.tsx                    — home, Legal Q&A, and Analyze Document pages
+  analyze/page.tsx, login/page.tsx    — home (incl. Act Search), Legal Q&A, Analyze Document, Login
   error.tsx, not-found.tsx            — styled app-wide error/404 boundaries
-  api/{chat,analyze,session}          — Route Handlers
-components/                            — ChatWidget, DocumentUpload, DocumentSummary,
-                                          Sidebar, FloatingIcons, LegalDisclaimerBanner
-lib/                                    — ai-gateway, document-parser, document-store,
-                                          retrieval, rate-limit, session, session-crypto,
-                                          session-store, chat-store, global-store, turso, types
+  api/{chat,analyze,session,
+       act-search,auth/login,
+       auth/logout}                   — Route Handlers
+components/                            — ChatWidget, DocumentUpload, DocumentSummary, ActSearch,
+                                          LoginForm, ToastProvider, Sidebar, FloatingIcons,
+                                          LegalDisclaimerBanner
+lib/                                    — ai-gateway, document-parser, document-store, act-search,
+                                          retrieval, rate-limit, auth, session, session-cookie,
+                                          session-crypto, session-store, chat-store, global-store,
+                                          turso, types
 seed/                                   — legal-corpus.ts (legalSnippets, LEGAL_DISCLAIMER,
-                                          RISK_CLAUSE_PATTERNS)
+                                          RISK_CLAUSE_PATTERNS), act-sections.ts (IPC/CrPC ↔
+                                          BNS/BNSS reference index)
 public/                                 — logo.svg
 tests/unit/                             — Vitest specs
 tests/e2e/                              — Playwright + axe-core specs
@@ -223,14 +235,19 @@ simulated Turso failures via `*-turso-errors.test.ts`), session-crypto
 sign/verify/tamper-detection, the AI gateway's provider configuration logic, the
 document parser's validation/parsing/risk-flagging, the seeded legal corpus's
 structure (locale coverage, disclaimer presence), the `ChatWidget`/`DocumentUpload`
-/`DocumentSummary`/`Sidebar` components, the env-based login gate (`lib/auth.ts`,
-credential parsing/verification), the auth-gating middleware itself (`proxy.ts`,
-exercised directly with fake requests), and real (non-mocked) PDF parsing against
-an embedded PDF fixture — 22 test files, 104 tests, all passing.
+/`DocumentSummary`/`Sidebar` components, the env-based login gate (`lib/auth.ts`
+credential parsing/verification + `app/api/auth/login|logout` route handlers,
+including the email-format-vs-wrong-credential distinction), the auth-gating
+middleware itself (`proxy.ts`, exercised directly with fake requests), and real
+(non-mocked) PDF parsing against an embedded PDF fixture, the Act &amp; Section search
+index, and the login form's email-validation/red-highlight/toast behavior —
+26 test files, 129 tests, all passing.
 
 `npm run test:e2e` covers: navigation flows, session-cookie tampering, chat/locale
 persistence across reload, a styled-404 check, axe-core WCAG 2.1 AA audits on every
-page, and zero-horizontal-overflow checks across 5 breakpoints (320px–1920px).
+page, and zero-horizontal-overflow checks across 5 breakpoints (320px–1920px) —
+34 tests, all passing (run with `APP_USERS` forced blank for a deterministic,
+gate-free test server — see `playwright.config.ts`).
 
 CI (`.github/workflows/ci.yml`) runs all of the above on every push/PR.
 
@@ -293,7 +310,7 @@ demonstrating the AI features (see `DEMO_VIDEO_GUIDE.md`).
 | Code Quality | TypeScript strict mode + `noUncheckedIndexedAccess`, ESLint flat config, zero lint/typecheck errors, dual-mode `lib/*` modules with a single clear responsibility each |
 | Security | See [Security](#security) above — Zod validation, rate limiting, signed httpOnly cookies, CSP/security headers, gitignored secrets |
 | Efficiency | Every AI call has a 12s timeout that degrades to a working fallback answer instead of hanging; in-memory fallback avoids a hard DB dependency on the request path |
-| Testing | 104 Vitest unit tests across every `lib/` module and component (incl. simulated DB-failure tests, the auth-gating middleware, and real non-mocked PDF parsing) + Playwright e2e specs for navigation, responsive layout, and accessibility — see [Testing](#testing) |
+| Testing | 129 Vitest unit tests + 34 Playwright e2e tests (incl. simulated DB-failure tests, the auth-gating middleware, real non-mocked PDF parsing, and axe-core WCAG audits — all actually run, not just linted) — see [Testing](#testing) |
 | Accessibility | See [Accessibility](#accessibility) above |
 | Problem Statement Alignment | See the pillar/feature table at the top of this README — every clause of "understand, compare, and navigate legal documents" maps to a shipped feature |
 

@@ -8,6 +8,7 @@ export async function getSessionId(): Promise<string> {
   return h.get("x-session-id") ?? "";
 }
 
+/** Server Component helper combining sid + locale in one call, since almost every page needs both together. */
 export async function getSession(): Promise<SessionRecord & { sid: string }> {
   const sid = await getSessionId();
 

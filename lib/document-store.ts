@@ -6,6 +6,7 @@ const MAX_HISTORY = 20;
 
 const inMemoryHistory = getGlobalMap<string, PersistedAnalysis[]>("document_analyses");
 
+/** Dual-mode read, newest first — lets the UI show "your recent analyses" regardless of whether Turso is configured. */
 export async function listAnalyses(sid: string): Promise<PersistedAnalysis[]> {
   const client = getTursoClient();
 
@@ -29,6 +30,7 @@ export async function listAnalyses(sid: string): Promise<PersistedAnalysis[]> {
   }));
 }
 
+/** Generates the id/timestamp server-side and returns the saved record so the caller can echo it back without a second read. */
 export async function appendAnalysis(
   sid: string,
   analysis: Omit<PersistedAnalysis, "id" | "createdAt">,

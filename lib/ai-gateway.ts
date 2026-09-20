@@ -21,10 +21,12 @@ export class AiNotConfiguredError extends Error {
   }
 }
 
+/** Lets callers (chat/analyze routes) branch to a non-AI fallback instead of attempting a call that would only throw. */
 export function isAiConfigured(): boolean {
   return Boolean(process.env.GROQ_API_KEY) || Boolean(process.env.NVIDIA_API_KEY);
 }
 
+/** Picks Groq over NVIDIA when both are configured — Groq is free-tier and faster to set up, so it's the preferred default. */
 function resolveModel(): LanguageModel {
   if (process.env.GROQ_API_KEY) return groq(GROQ_MODEL_ID);
   if (process.env.NVIDIA_API_KEY) {

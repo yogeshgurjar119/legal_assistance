@@ -101,6 +101,7 @@ function NavLinks({ collapsed, onNavigate }: { collapsed: boolean; onNavigate?: 
   );
 }
 
+/** Renders nothing unless the login gate is actually on (authRequired), so a zero-config install of this app never shows a pointless "Log out" button. */
 function UserMenu({ collapsed }: { collapsed: boolean }) {
   const router = useRouter();
   const [authInfo, setAuthInfo] = useState<{ authRequired: boolean; username: string | null } | null>(null);
@@ -123,6 +124,7 @@ function UserMenu({ collapsed }: { collapsed: boolean }) {
 
   if (!authInfo?.authRequired) return null;
 
+  /** Redirects unconditionally in `finally` — even if the logout request itself fails, sending the user to /login is the safe outcome either way. */
   async function handleLogout() {
     if (isLoggingOut) return;
     setIsLoggingOut(true);
