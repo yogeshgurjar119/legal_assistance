@@ -26,6 +26,13 @@ export default defineConfig({
       TURSO_AUTH_TOKEN: "",
       GROQ_API_KEY: "",
       NVIDIA_API_KEY: "",
+      // Force the login gate OFF for e2e runs — without this, a developer's
+      // real APP_USERS in .env.local would gate every page behind /login,
+      // and none of these specs perform a login first (they test the public,
+      // zero-config experience). The gate's own logic (redirects, 401s,
+      // cookie signing, the SESSION_SECRET fail-safe) is covered by
+      // tests/unit/proxy.test.ts and tests/unit/auth.test.ts instead.
+      APP_USERS: "",
     },
   },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],

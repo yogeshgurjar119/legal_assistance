@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 test.describe("primary navigation", () => {
   test("home page renders both pillar links", async ({ page }) => {
     await page.goto("/");
-    await expect(page.getByRole("heading", { name: "LexPlain AI" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "LexPlain AI", level: 1 })).toBeVisible();
     const primaryNav = page.getByRole("navigation", { name: "Primary" });
     await expect(primaryNav.getByRole("link", { name: "Legal Q&A" })).toBeVisible();
     await expect(primaryNav.getByRole("link", { name: "Analyze Document" })).toBeVisible();
