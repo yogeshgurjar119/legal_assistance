@@ -1,3 +1,16 @@
+# Next.js
+/.next/
+/out/
+next-env.d.ts
+*.tsbuildinfo
+
+# Testing
+/playwright-report/
+/test-results/
+
+# Vercel
+.vercel
+
 # Logs
 logs
 *.log
@@ -141,3 +154,9 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+.claude/
+_audit_report/
+AGENTS.md
+PLANNING.md
+CLAUDE.md
+DEMO_VIDEO_GUIDE.md
