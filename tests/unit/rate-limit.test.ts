@@ -27,4 +27,15 @@ describe("checkRateLimit", () => {
     expect(resultA.allowed).toBe(false);
     expect(resultB.allowed).toBe(true);
   });
+
+  // Regression coverage for the periodic stale-bucket sweep (see rate-limit.ts):
+  // hitting many distinct identifiers must trigger the sweep's internal
+  // counter/threshold without throwing or corrupting unrelated buckets.
+  it("stays correct across many distinct identifiers (exercises the periodic sweep without error)", () => {
+    for (let i = 0; i < 600; i++) {
+      checkRateLimit(`sweep-${i}`);
+    }
+    const freshId = `sweep-fresh-${Math.random()}`;
+    expect(checkRateLimit(freshId).allowed).toBe(true);
+  });
 });

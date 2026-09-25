@@ -208,7 +208,7 @@ components/                            — ChatWidget, DocumentUpload, DocumentS
                                           LoginForm, ToastProvider, Sidebar, FloatingIcons,
                                           LegalDisclaimerBanner
 lib/                                    — ai-gateway, document-parser, document-store, act-search,
-                                          retrieval, rate-limit, auth, session, session-cookie,
+                                          retrieval, rate-limit, auth, session-cookie,
                                           session-crypto, session-store, chat-store, global-store,
                                           turso, types
 seed/                                   — legal-corpus.ts (legalSnippets, LEGAL_DISCLAIMER,

@@ -16,9 +16,8 @@ describe("turso", () => {
   });
 
   it("returns null when TURSO_DATABASE_URL is not configured", async () => {
-    const { getTursoClient, isTursoConfigured } = await import("@/lib/turso");
+    const { getTursoClient } = await import("@/lib/turso");
     expect(getTursoClient()).toBeNull();
-    expect(isTursoConfigured()).toBe(false);
   });
 
   it("ensureSchema is a no-op when not configured", async () => {

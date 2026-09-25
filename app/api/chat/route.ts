@@ -75,6 +75,16 @@ async function handlePost(req: NextRequest): Promise<NextResponse> {
   const snippets = retrieveSnippets(message);
   const context = buildContextBlock(snippets, locale);
 
+  // Read prior history BEFORE appending the current message — reading after
+  // appending would require slicing the just-written message back off by
+  // position, which silently assumes it landed last. That assumption breaks
+  // under concurrent requests for the same session (e.g. a double-submit),
+  // dropping the real new message and pulling in someone else's instead.
+  const priorMessages = await listMessages(sid).catch((err) => {
+    console.error("chat history lookup failed (continuing without it)", err);
+    return [];
+  });
+
   await safeAppendMessage(sid, { role: "user", content: message, locale });
 
   if (!isAiConfigured()) {
@@ -88,16 +98,11 @@ async function handlePost(req: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ reply: fallback, mode: "fallback", remaining, promptDebug });
   }
 
-  const priorMessages = await listMessages(sid).catch((err) => {
-    console.error("chat history lookup failed (continuing without it)", err);
-    return [];
-  });
-
   const systemPrompt = systemPromptFor(locale, context);
 
   try {
     const messages: ModelMessage[] = [
-      ...priorMessages.slice(-6, -1).map((m) => ({ role: m.role, content: m.content }) as ModelMessage),
+      ...priorMessages.slice(-5).map((m) => ({ role: m.role, content: m.content }) as ModelMessage),
       { role: "user", content: message },
     ];
 

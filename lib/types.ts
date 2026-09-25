@@ -31,11 +31,6 @@ export interface FlaggedClause {
   excerpt: string;
 }
 
-export interface ChatRequestBody {
-  message: string;
-  locale: SupportedLocale;
-}
-
 export interface PersistedChatMessage {
   role: "user" | "assistant";
   content: string;

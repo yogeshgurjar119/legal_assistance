@@ -23,6 +23,13 @@ async function handlePost(req: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: "Login is not configured on this server." }, { status: 503 });
   }
 
+  // Per-IP limit blunts a pure flood from one source. It's not sufficient on
+  // its own — X-Forwarded-For is only trustworthy behind a proxy that sets it
+  // itself (e.g. Vercel's edge network); a self-hosted deployment exposed
+  // directly to the internet would need to derive the IP from the raw socket
+  // instead. Either way, an attacker rotating IPs (or spoofing this header
+  // where it isn't trustworthy) could still hammer one specific account, so
+  // a second limit keyed by the submitted email is applied below as well.
   const ip = req.headers.get("x-forwarded-for") ?? req.headers.get("x-real-ip") ?? "anonymous";
   const { allowed } = checkRateLimit(`login:${ip}`);
   if (!allowed) {
@@ -34,6 +41,13 @@ async function handlePost(req: NextRequest): Promise<NextResponse> {
   if (!parsed.success) {
     const message = parsed.error.issues[0]?.message ?? "Invalid request.";
     return NextResponse.json({ error: message }, { status: 400 });
+  }
+
+  // Per-account limit: stops repeated guesses against one email even if the
+  // attacker spreads requests across many IPs.
+  const { allowed: accountAllowed } = checkRateLimit(`login-account:${parsed.data.username}`);
+  if (!accountAllowed) {
+    return NextResponse.json({ error: "Too many login attempts. Try again in a minute." }, { status: 429 });
   }
 
   const user = verifyCredentials(parsed.data.username, parsed.data.password);

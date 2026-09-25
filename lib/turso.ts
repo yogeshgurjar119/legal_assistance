@@ -23,11 +23,6 @@ export function getTursoClient(): Client | null {
   return cachedClient;
 }
 
-/** Lets callers branch to their in-memory fallback without needing to know getTursoClient()'s null-caching details. */
-export function isTursoConfigured(): boolean {
-  return getTursoClient() !== null;
-}
-
 async function createSchema(client: Client): Promise<void> {
   await client.batch(
     [
@@ -56,8 +51,15 @@ async function createSchema(client: Client): Promise<void> {
     "write",
   );
 
-  await client.execute(
-    "CREATE INDEX IF NOT EXISTS idx_document_analyses_sid ON document_analyses(sid)",
+  // Both tables are always queried by sid — without these, every chat/analyze
+  // request does a full table scan that gets slower as history grows across
+  // all users, not just the requesting session.
+  await client.batch(
+    [
+      "CREATE INDEX IF NOT EXISTS idx_chat_messages_sid ON chat_messages(sid)",
+      "CREATE INDEX IF NOT EXISTS idx_document_analyses_sid ON document_analyses(sid)",
+    ],
+    "write",
   );
 }
 
