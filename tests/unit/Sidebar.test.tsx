@@ -1,10 +1,13 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor, act, within } from "@testing-library/react";
 import { Sidebar } from "@/components/Sidebar";
+
+const pushMock = vi.fn();
+const refreshMock = vi.fn();
 
 vi.mock("next/navigation", () => ({
   usePathname: () => "/",
-  useRouter: () => ({ push: vi.fn(), refresh: vi.fn() }),
+  useRouter: () => ({ push: pushMock, refresh: refreshMock }),
 }));
 
 describe("Sidebar", () => {
@@ -53,6 +56,81 @@ describe("Sidebar", () => {
     expect(screen.getByText("Legal Q&A")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: /collapse/i }));
     expect(screen.queryByText("Legal Q&A")).toBeNull();
+  });
+});
+
+describe("Sidebar logout confirmation (authRequired: true)", () => {
+  beforeEach(() => {
+    pushMock.mockClear();
+    refreshMock.mockClear();
+    vi.stubGlobal(
+      "fetch",
+      vi.fn((url: string, init?: RequestInit) => {
+        if (typeof url === "string" && url.includes("/api/auth/logout")) {
+          return Promise.resolve({ ok: true, json: async () => ({ ok: true }) });
+        }
+        return Promise.resolve({
+          ok: true,
+          json: async () => ({ authRequired: true, username: "admin@legal.com" }),
+        });
+      }),
+    );
+  });
+
+  it("clicking Log out opens a confirmation dialog instead of logging out immediately", async () => {
+    render(
+      <Sidebar>
+        <p>Page content</p>
+      </Sidebar>,
+    );
+
+    const logoutButton = await screen.findByRole("button", { name: "Log out" });
+    fireEvent.click(logoutButton);
+
+    expect(await screen.findByRole("alertdialog", { name: /log out\?/i })).toBeInTheDocument();
+    // No navigation should have happened yet — logout requires explicit confirmation.
+    expect(pushMock).not.toHaveBeenCalled();
+  });
+
+  it("Cancel dismisses the dialog without logging out", async () => {
+    render(
+      <Sidebar>
+        <p>Page content</p>
+      </Sidebar>,
+    );
+
+    fireEvent.click(await screen.findByRole("button", { name: "Log out" }));
+    await screen.findByRole("alertdialog");
+
+    fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
+
+    await waitFor(() => {
+      expect(screen.queryByRole("alertdialog")).toBeNull();
+    });
+    expect(pushMock).not.toHaveBeenCalled();
+  });
+
+  it("confirming logs out and redirects to /login", async () => {
+    render(
+      <Sidebar>
+        <p>Page content</p>
+      </Sidebar>,
+    );
+
+    fireEvent.click(await screen.findByRole("button", { name: "Log out" }));
+    await screen.findByRole("alertdialog");
+
+    // Two "Log out" buttons now exist: the sidebar trigger and the dialog's
+    // confirm button — target the one inside the dialog.
+    const dialog = screen.getByRole("alertdialog");
+    await act(async () => {
+      fireEvent.click(within(dialog).getByRole("button", { name: "Log out" }));
+    });
+
+    await waitFor(() => {
+      expect(pushMock).toHaveBeenCalledWith("/login");
+    });
+    expect(refreshMock).toHaveBeenCalled();
   });
 });
 

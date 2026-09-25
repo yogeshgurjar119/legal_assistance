@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { FloatingIcons } from "@/components/FloatingIcons";
 
 const LINKS = [
@@ -106,6 +107,7 @@ function UserMenu({ collapsed }: { collapsed: boolean }) {
   const router = useRouter();
   const [authInfo, setAuthInfo] = useState<{ authRequired: boolean; username: string | null } | null>(null);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -143,7 +145,7 @@ function UserMenu({ collapsed }: { collapsed: boolean }) {
       )}
       <button
         type="button"
-        onClick={handleLogout}
+        onClick={() => setConfirmOpen(true)}
         disabled={isLoggingOut}
         title={collapsed ? "Log out" : undefined}
         className={`flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs font-medium text-[var(--muted)] transition-colors hover:bg-[var(--surface)] hover:text-[var(--foreground)] disabled:opacity-50 ${
@@ -152,6 +154,19 @@ function UserMenu({ collapsed }: { collapsed: boolean }) {
       >
         {collapsed ? "⎋" : isLoggingOut ? "Logging out…" : "Log out"}
       </button>
+      <ConfirmDialog
+        open={confirmOpen}
+        title="Log out?"
+        message={
+          authInfo.username
+            ? `You'll be signed out as ${authInfo.username} and returned to the login page.`
+            : "You'll be returned to the login page."
+        }
+        confirmLabel="Log out"
+        isConfirming={isLoggingOut}
+        onConfirm={handleLogout}
+        onCancel={() => setConfirmOpen(false)}
+      />
     </div>
   );
 }
