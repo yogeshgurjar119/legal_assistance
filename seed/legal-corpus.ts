@@ -27,7 +27,13 @@ export const legalSnippets: LegalSnippet[] = [
   {
     id: "tenant-security-deposit",
     category: "tenant-rights",
-    keywords: ["security deposit", "deposit", "landlord keep", "move out", "refund deposit"],
+    keywords: [
+      "security deposit", "deposit", "landlord keep", "move out", "refund deposit",
+      "depósito de seguridad", "depósito", "devolver depósito",
+      "dépôt de garantie", "caution",
+      "مبلغ التأمين", "التأمين",
+      "depósito de segurança",
+    ],
     answer: withCaveat({
       en: "Most jurisdictions require a landlord to return a security deposit within a set number of days after move-out, minus documented damage beyond normal wear and tear — a landlord generally cannot keep the entire deposit without an itemized reason.",
       es: "La mayoría de las jurisdicciones exigen que el arrendador devuelva el depósito de seguridad dentro de un plazo determinado tras la mudanza, descontando solo daños documentados que excedan el desgaste normal; por lo general no puede quedarse con todo el depósito sin una justificación detallada.",
@@ -39,7 +45,13 @@ export const legalSnippets: LegalSnippet[] = [
   {
     id: "tenant-eviction-notice",
     category: "tenant-rights",
-    keywords: ["eviction", "evict", "notice to vacate", "kicked out", "landlord notice"],
+    keywords: [
+      "eviction", "evict", "notice to vacate", "kicked out", "landlord notice",
+      "desalojo", "desalojar", "aviso de desalojo",
+      "expulsion", "expulser",
+      "إخلاء", "طرد",
+      "despejo", "despejar",
+    ],
     answer: withCaveat({
       en: "Landlords typically must provide written notice and, in most places, go through a court process before evicting a tenant — a landlord generally cannot lock you out, remove your belongings, or shut off utilities to force you out.",
       es: "Por lo general, los arrendadores deben entregar un aviso por escrito y, en la mayoría de los lugares, seguir un proceso judicial antes de desalojar a un inquilino; normalmente no pueden cambiar las cerraduras, retirar sus pertenencias ni cortar los servicios para obligarlo a irse.",
@@ -51,7 +63,13 @@ export const legalSnippets: LegalSnippet[] = [
   {
     id: "tenant-habitability",
     category: "tenant-rights",
-    keywords: ["habitability", "repairs", "landlord fix", "unsafe apartment", "no heat", "mold"],
+    keywords: [
+      "habitability", "repairs", "landlord fix", "unsafe apartment", "no heat", "mold",
+      "habitabilidad", "reparaciones", "sin calefacción", "moho",
+      "habitabilité", "réparations", "moisissure",
+      "صلاحية السكن", "إصلاحات", "عفن",
+      "habitabilidade", "reparos", "mofo",
+    ],
     answer: withCaveat({
       en: "Landlords generally must keep a rental unit safe and livable (working heat, water, plumbing, and no serious hazards) — a tenant can often report the issue in writing, and some jurisdictions allow rent withholding or repair-and-deduct if the landlord fails to fix serious problems.",
       es: "Por lo general, los arrendadores deben mantener la vivienda segura y habitable (calefacción, agua y plomería funcionando, sin peligros graves); el inquilino suele poder reportar el problema por escrito, y algunas jurisdicciones permiten retener la renta o reparar y descontar el costo si el arrendador no soluciona problemas graves.",
@@ -65,7 +83,13 @@ export const legalSnippets: LegalSnippet[] = [
   {
     id: "contract-what-is",
     category: "contract-basics",
-    keywords: ["what is a contract", "valid contract", "offer acceptance consideration", "binding agreement"],
+    keywords: [
+      "what is a contract", "valid contract", "offer acceptance consideration", "binding agreement",
+      "qué es un contrato", "contrato válido",
+      "qu'est-ce qu'un contrat", "contrat valide",
+      "ما هو العقد", "عقد صالح",
+      "o que é um contrato", "contrato válido",
+    ],
     answer: withCaveat({
       en: "A contract is generally a legally binding agreement formed when one party makes an offer, another accepts it, and something of value (consideration) is exchanged — it can be written, oral, or implied by conduct, though some contracts (like real estate) must be in writing to be enforceable.",
       es: "Un contrato es generalmente un acuerdo legalmente vinculante que se forma cuando una parte hace una oferta, otra la acepta y se intercambia algo de valor (contraprestación); puede ser escrito, oral o implícito por conducta, aunque algunos contratos (como los de bienes raíces) deben constar por escrito para ser exigibles.",
@@ -77,7 +101,13 @@ export const legalSnippets: LegalSnippet[] = [
   {
     id: "contract-cooling-off-period",
     category: "contract-basics",
-    keywords: ["cooling off period", "cancel contract", "right to cancel", "rescind"],
+    keywords: [
+      "cooling off period", "cancel contract", "right to cancel", "rescind",
+      "período de reflexión", "cancelar contrato", "derecho a cancelar",
+      "délai de rétractation", "annuler contrat",
+      "فترة التروي", "إلغاء العقد",
+      "período de reflexão", "cancelar contrato",
+    ],
     answer: withCaveat({
       en: "A cooling-off period is a set number of days after signing certain contracts (common for door-to-door sales, timeshares, or some loans) during which a consumer can cancel without penalty — it does not apply to every contract, so check the specific law or the contract's own terms.",
       es: "Un período de reflexión es un número determinado de días tras firmar ciertos contratos (comunes en ventas a domicilio, multipropiedad o algunos préstamos) durante los cuales el consumidor puede cancelar sin penalización; no aplica a todos los contratos, así que conviene verificar la ley específica o los términos del propio contrato.",
@@ -89,7 +119,13 @@ export const legalSnippets: LegalSnippet[] = [
   {
     id: "contract-breach",
     category: "contract-basics",
-    keywords: ["breach of contract", "broke the contract", "didn't perform", "contract violation"],
+    keywords: [
+      "breach of contract", "broke the contract", "didn't perform", "contract violation",
+      "incumplimiento de contrato", "violación de contrato",
+      "rupture de contrat",
+      "إخلال بالعقد",
+      "quebra de contrato",
+    ],
     answer: withCaveat({
       en: "A breach of contract happens when one party fails to perform an obligation the agreement required — remedies can include damages (money to cover the loss), specific performance (a court order to complete the obligation), or cancellation of the contract, depending on how serious the breach is.",
       es: "Un incumplimiento de contrato ocurre cuando una parte no cumple una obligación exigida por el acuerdo; los recursos pueden incluir daños (dinero para cubrir la pérdida), cumplimiento específico (una orden judicial para completar la obligación) o la cancelación del contrato, según la gravedad del incumplimiento.",
@@ -103,7 +139,13 @@ export const legalSnippets: LegalSnippet[] = [
   {
     id: "consumer-warranty-basics",
     category: "consumer-protection",
-    keywords: ["warranty", "implied warranty", "product defective", "warranty claim"],
+    keywords: [
+      "warranty", "implied warranty", "product defective", "warranty claim",
+      "garantía", "producto defectuoso",
+      "garantie", "produit défectueux",
+      "ضمان", "منتج معيب",
+      "garantia", "produto defeituoso",
+    ],
     answer: withCaveat({
       en: "Many purchases carry an implied warranty that a product will work as expected, even without a written warranty — a seller may be required to repair, replace, or refund a defective product within a reasonable time, subject to local consumer protection law.",
       es: "Muchas compras incluyen una garantía implícita de que el producto funcionará como se espera, incluso sin garantía escrita; es posible que el vendedor deba reparar, reemplazar o reembolsar un producto defectuoso dentro de un plazo razonable, según la ley local de protección al consumidor.",
@@ -115,7 +157,13 @@ export const legalSnippets: LegalSnippet[] = [
   {
     id: "consumer-returns-refunds",
     category: "consumer-protection",
-    keywords: ["return policy", "refund rights", "store return", "no refund sign"],
+    keywords: [
+      "return policy", "refund rights", "store return", "no refund sign",
+      "política de devolución", "derecho a reembolso",
+      "politique de retour", "remboursement",
+      "سياسة الإرجاع", "استرداد",
+      "política de devolução", "reembolso",
+    ],
     answer: withCaveat({
       en: "Return and refund rights mostly come from the seller's own posted policy, not a universal law — but a defective, unsafe, or misrepresented product is often covered by consumer protection law regardless of a store's 'no refunds' sign.",
       es: "Los derechos de devolución y reembolso provienen mayormente de la política publicada por el vendedor, no de una ley universal; sin embargo, un producto defectuoso, inseguro o mal representado suele estar protegido por la ley de protección al consumidor, sin importar un aviso de 'no hay reembolsos'.",
@@ -127,7 +175,13 @@ export const legalSnippets: LegalSnippet[] = [
   {
     id: "consumer-unfair-practices",
     category: "consumer-protection",
-    keywords: ["unfair trade practice", "deceptive advertising", "scam", "false advertising"],
+    keywords: [
+      "unfair trade practice", "deceptive advertising", "scam", "false advertising",
+      "práctica comercial desleal", "publicidad engañosa", "estafa",
+      "pratique commerciale déloyale", "publicité trompeuse", "arnaque",
+      "ممارسة تجارية غير عادلة", "إعلان مضلل", "احتيال",
+      "prática comercial desleal", "publicidade enganosa", "golpe",
+    ],
     answer: withCaveat({
       en: "Deceptive or unfair trade practices — false advertising, bait-and-switch pricing, hidden fees — are commonly prohibited by consumer protection law, and a consumer can often file a complaint with a local consumer protection agency or pursue a civil claim.",
       es: "Las prácticas comerciales engañosas o desleales —publicidad falsa, ofertas señuelo, cargos ocultos— suelen estar prohibidas por la ley de protección al consumidor, y el consumidor a menudo puede presentar una queja ante una agencia local de protección al consumidor o iniciar una demanda civil.",
@@ -141,7 +195,13 @@ export const legalSnippets: LegalSnippet[] = [
   {
     id: "employment-at-will",
     category: "employment-basics",
-    keywords: ["at will employment", "fired without reason", "terminated", "can i be fired"],
+    keywords: [
+      "at will employment", "fired without reason", "terminated", "can i be fired",
+      "despido sin causa", "me pueden despedir", "empleo a voluntad",
+      "licenciement sans motif", "emploi à volonté",
+      "فصل بدون سبب", "هل يمكن فصلي",
+      "demissão sem motivo", "posso ser demitido",
+    ],
     answer: withCaveat({
       en: "In many places, employment is 'at will,' meaning either the employer or employee can end the relationship at any time for almost any reason — but termination is still illegal if it's based on a protected characteristic (like race or disability) or retaliation for a protected activity.",
       es: "En muchos lugares, el empleo es 'a voluntad', lo que significa que tanto el empleador como el empleado pueden terminar la relación en cualquier momento por casi cualquier motivo; sin embargo, el despido sigue siendo ilegal si se basa en una característica protegida (como raza o discapacidad) o en represalia por una actividad protegida.",
@@ -153,7 +213,13 @@ export const legalSnippets: LegalSnippet[] = [
   {
     id: "employment-wage-hour",
     category: "employment-basics",
-    keywords: ["minimum wage", "overtime pay", "unpaid wages", "wage theft"],
+    keywords: [
+      "minimum wage", "overtime pay", "unpaid wages", "wage theft",
+      "salario mínimo", "horas extra", "salarios no pagados",
+      "salaire minimum", "heures supplémentaires",
+      "الحد الأدنى للأجور", "أجر إضافي",
+      "salário mínimo", "horas extras",
+    ],
     answer: withCaveat({
       en: "Wage and hour laws typically set a minimum wage and require overtime pay (often 1.5x the regular rate) for hours worked beyond a set threshold — an employer withholding earned wages or misclassifying a worker to avoid overtime may be violating these laws.",
       es: "Las leyes de salario y horas suelen establecer un salario mínimo y exigir pago de horas extra (a menudo 1.5 veces la tarifa regular) por las horas trabajadas más allá de un umbral fijado; un empleador que retenga salarios devengados o clasifique erróneamente a un trabajador para evitar pagar horas extra podría estar violando estas leyes.",
@@ -165,7 +231,13 @@ export const legalSnippets: LegalSnippet[] = [
   {
     id: "employment-discrimination",
     category: "employment-basics",
-    keywords: ["workplace discrimination", "harassment at work", "discriminated", "hostile work environment"],
+    keywords: [
+      "workplace discrimination", "harassment at work", "discriminated", "hostile work environment",
+      "discriminación laboral", "acoso laboral",
+      "discrimination au travail", "harcèlement au travail",
+      "تمييز في العمل", "تحرش في العمل",
+      "discriminação no trabalho", "assédio no trabalho",
+    ],
     answer: withCaveat({
       en: "Workplace discrimination or harassment based on characteristics like race, gender, age, disability, or religion is generally prohibited by employment law — an affected employee can often file a complaint with an employment or human-rights agency before or instead of a lawsuit.",
       es: "La discriminación o el acoso laboral por características como raza, género, edad, discapacidad o religión suele estar prohibido por la legislación laboral; un empleado afectado a menudo puede presentar una queja ante una agencia laboral o de derechos humanos antes de, o en lugar de, una demanda.",
@@ -179,7 +251,13 @@ export const legalSnippets: LegalSnippet[] = [
   {
     id: "small-claims-what-is",
     category: "small-claims",
-    keywords: ["small claims court", "what is small claims", "sue someone", "small claims limit"],
+    keywords: [
+      "small claims court", "what is small claims", "sue someone", "small claims limit",
+      "tribunal de reclamos menores", "demandar a alguien",
+      "tribunal des petites créances",
+      "محكمة الدعاوى الصغيرة",
+      "tribunal de pequenas causas", "processar alguém",
+    ],
     answer: withCaveat({
       en: "Small claims court is a simplified, lower-cost court for disputes below a set dollar limit (often a few thousand dollars, varying by jurisdiction) — it's designed so people can represent themselves without a lawyer, with a faster process than regular civil court.",
       es: "El tribunal de reclamos menores es un tribunal simplificado y de bajo costo para disputas por debajo de un límite monetario fijado (a menudo unos pocos miles de dólares, según la jurisdicción); está diseñado para que las personas puedan representarse a sí mismas sin abogado, con un proceso más rápido que el tribunal civil ordinario.",
@@ -191,7 +269,13 @@ export const legalSnippets: LegalSnippet[] = [
   {
     id: "small-claims-how-to-file",
     category: "small-claims",
-    keywords: ["how to file small claims", "filing a claim", "small claims process", "sue in small claims"],
+    keywords: [
+      "how to file small claims", "filing a claim", "small claims process", "sue in small claims",
+      "cómo presentar una demanda", "presentar un reclamo",
+      "comment déposer une plainte",
+      "كيفية رفع دعوى",
+      "como registrar uma ação", "registrar uma reclamação",
+    ],
     answer: withCaveat({
       en: "Filing a small claims case generally involves completing a claim form at the local courthouse (or online where available), paying a modest filing fee, and formally notifying (serving) the other party — court staff or the court's website often have templates and instructions for each step.",
       es: "Presentar un caso en el tribunal de reclamos menores generalmente implica completar un formulario de demanda en el juzgado local (o en línea donde esté disponible), pagar una tarifa de presentación modesta y notificar formalmente (emplazar) a la otra parte; el personal del tribunal o su sitio web suelen tener plantillas e instrucciones para cada paso.",
@@ -203,7 +287,13 @@ export const legalSnippets: LegalSnippet[] = [
   {
     id: "small-claims-statute-of-limitations",
     category: "small-claims",
-    keywords: ["statute of limitations", "how long to sue", "deadline to file lawsuit", "time limit claim"],
+    keywords: [
+      "statute of limitations", "how long to sue", "deadline to file lawsuit", "time limit claim",
+      "plazo de prescripción", "cuánto tiempo para demandar",
+      "délai de prescription",
+      "مدة التقادم",
+      "prazo prescricional", "quanto tempo para processar",
+    ],
     answer: withCaveat({
       en: "A statute of limitations is a deadline (often ranging from one to several years depending on the type of claim and jurisdiction) after which a lawsuit generally can no longer be filed — it's important to check the specific deadline for the type of claim early, since missing it can permanently bar the case.",
       es: "Un plazo de prescripción es una fecha límite (que suele oscilar entre uno y varios años según el tipo de reclamo y la jurisdicción) después de la cual generalmente ya no se puede presentar una demanda; es importante verificar el plazo específico para el tipo de reclamo cuanto antes, ya que perderlo puede impedir el caso de forma permanente.",
@@ -217,7 +307,13 @@ export const legalSnippets: LegalSnippet[] = [
   {
     id: "privacy-personal-data-basics",
     category: "data-privacy",
-    keywords: ["personal data", "data privacy", "what counts as personal data", "privacy rights"],
+    keywords: [
+      "personal data", "data privacy", "what counts as personal data", "privacy rights",
+      "datos personales", "privacidad de datos",
+      "données personnelles", "vie privée",
+      "بيانات شخصية", "خصوصية البيانات",
+      "dados pessoais", "privacidade de dados",
+    ],
     answer: withCaveat({
       en: "Personal data typically includes any information that can identify a specific person — name, email, ID numbers, location, or online identifiers — and many privacy laws require companies to collect only what's needed, explain how it's used, and protect it with reasonable security.",
       es: "Los datos personales suelen incluir cualquier información que pueda identificar a una persona específica —nombre, correo electrónico, números de identificación, ubicación o identificadores en línea—; muchas leyes de privacidad exigen que las empresas recopilen solo lo necesario, expliquen cómo se usa y lo protejan con seguridad razonable.",
@@ -229,7 +325,13 @@ export const legalSnippets: LegalSnippet[] = [
   {
     id: "privacy-data-breach-notification",
     category: "data-privacy",
-    keywords: ["data breach", "hacked", "breach notification", "my data was leaked"],
+    keywords: [
+      "data breach", "hacked", "breach notification", "my data was leaked",
+      "violación de datos", "me hackearon", "filtración de datos",
+      "violation de données", "piraté",
+      "اختراق بيانات", "تم اختراقي",
+      "violação de dados", "fui hackeado",
+    ],
     answer: withCaveat({
       en: "Many jurisdictions require a company to notify affected individuals within a set time after discovering a data breach involving personal information — affected people are often entitled to details about what was exposed and steps being taken, and sometimes to free credit monitoring.",
       es: "Muchas jurisdicciones exigen que una empresa notifique a las personas afectadas dentro de un plazo determinado tras descubrir una brecha de datos que involucre información personal; las personas afectadas suelen tener derecho a detalles sobre lo expuesto y las medidas tomadas, y a veces a monitoreo de crédito gratuito.",
@@ -241,7 +343,13 @@ export const legalSnippets: LegalSnippet[] = [
   {
     id: "privacy-right-to-access",
     category: "data-privacy",
-    keywords: ["right to access my data", "request my data", "delete my data", "data subject request"],
+    keywords: [
+      "right to access my data", "request my data", "delete my data", "data subject request",
+      "derecho a acceder a mis datos", "eliminar mis datos",
+      "droit d'accès à mes données", "supprimer mes données",
+      "الحق في الوصول إلى بياناتي", "حذف بياناتي",
+      "direito de acessar meus dados", "excluir meus dados",
+    ],
     answer: withCaveat({
       en: "Under many modern privacy laws, an individual can request a copy of the personal data a company holds about them, ask for corrections, or request deletion — companies are usually required to respond within a set period, and repeatedly ignoring such a request can itself be a violation.",
       es: "Según muchas leyes de privacidad modernas, una persona puede solicitar una copia de los datos personales que una empresa tiene sobre ella, pedir correcciones o solicitar su eliminación; las empresas suelen estar obligadas a responder dentro de un plazo fijado, e ignorar repetidamente esa solicitud puede constituir en sí mismo una infracción.",
